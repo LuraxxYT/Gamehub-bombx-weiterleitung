@@ -1,183 +1,157 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <script src="https://quge5.com/88/tag.min.js"
-       
-            data-zone="316939"
-            async
-            data-cfasync="false"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GameHub</title>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex">
-    <title>Weiterleitung zu GameHub...</title>
+<style>
+* {
+    box-sizing: border-box;
+}
 
-    <link rel="canonical" href="https://1gamehub.base44.app">
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #0b1220;
+}
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+#gamehub-main {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    z-index: 1;
+}
 
-        body {
-            margin: 0;
-            background: #0f172a;
-            color: #e2e8f0;
-            font-family: -apple-system, BlinkMacSystemFont,
-                "Segoe UI", Roboto, sans-serif;
+/* Hintergrund-Patch */
+#patch-window {
+    --patch-width: 250px;
+    --patch-height: 82px;
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            text-align: center;
-        }
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    width: var(--patch-width);
+    height: var(--patch-height);
+    overflow: hidden;
+    z-index: 20;
+    pointer-events: none;
+}
 
-        .container {
-            width: 90%;
-            max-width: 420px;
-            padding: 35px;
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 18px;
-        }
+#gamehub-patch {
+    position: absolute;
+    left: 0;
+    top: 0;
+    border: 0;
+    pointer-events: none;
+}
 
-        h1 {
-            font-size: 25px;
-            margin-bottom: 12px;
-        }
+/* Eigenes Branding über dem Base44-Badge */
+#brand-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
 
-        p {
-            color: #94a3b8;
-        }
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-        .timer {
-            font-size: 55px;
-            font-weight: bold;
-            color: #38bdf8;
-            margin: 25px 0;
-        }
+    background: rgba(8, 14, 27, 0.94);
+    color: white;
 
-        .progress {
-            height: 8px;
-            background: #334155;
-            border-radius: 20px;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
 
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background: #38bdf8;
-            transition: width 0.3s linear;
-        }
+    pointer-events: auto;
+    user-select: none;
+    cursor: default;
+}
 
-        a {
-            color: #38bdf8;
-            text-decoration: none;
-        }
+#ad-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    pointer-events: none;
+}
 
-        .small {
-            font-size: 12px;
-            color: #64748b;
-        }
-    </style>
+@media (max-width: 600px) {
+    #patch-window {
+        --patch-width: 210px;
+        --patch-height: 70px;
+    }
+
+    #brand-overlay {
+        font-size: 12px;
+    }
+}
+</style>
 </head>
 
 <body>
 
-<div class="container">
+<!-- Haupt-GameHub -->
+<iframe
+    id="gamehub-main"
+    src="https://1gamehub.base44.app/"
+    allow="fullscreen; autoplay">
+</iframe>
 
-    <h1>GameHub</h1>
+<!-- Zweites iframe als Hintergrund-Patch -->
+<div id="patch-window">
 
-    <p>Du wirst zu GameHub weitergeleitet.</p>
+    <iframe
+        id="gamehub-patch"
+        src="https://1gamehub.base44.app/"
+        tabindex="-1"
+        aria-hidden="true">
+    </iframe>
 
-    <p>Bitte warte einen Moment ...</p>
-
-    <div class="timer" id="timer">30</div>
-
-    <div class="progress">
-        <div class="progress-bar" id="progress"></div>
+    <!-- Fängt Interaktionen mit dem Badge ab -->
+    <div id="brand-overlay">
+        By Dummraxx Software
     </div>
-
-    <p id="status">Weiterleitung in 30 Sekunden</p>
-
-    <p class="small">
-        Falls die Weiterleitung nicht funktioniert:
-        <a id="manualLink" href="https://1gamehub.base44.app">
-            Hier klicken
-        </a>
-    </p>
 
 </div>
 
+<!-- Werbung -->
+<div id="ad-layer">
+    <script
+        src="https://quge5.com/88/tag.min.js"
+        data-zone="316939"
+        async
+        data-cfasync="false">
+    </script>
+</div>
+
 <script>
-(function () {
+(() => {
+    const patchWindow = document.getElementById("patch-window");
+    const patchFrame = document.getElementById("gamehub-patch");
 
-    const targetBase = "https://1gamehub.base44.app";
+    function resizePatch() {
+        const style = getComputedStyle(patchWindow);
 
-    const duration = 30;
+        const width =
+            parseFloat(style.getPropertyValue("--patch-width")) || 250;
 
-    const path = window.location.pathname;
-    const search = window.location.search;
-    const hash = window.location.hash;
+        const height =
+            parseFloat(style.getPropertyValue("--patch-height")) || 82;
 
-    const target = targetBase + path + search + hash;
+        patchFrame.style.width =
+            `${window.innerWidth + width}px`;
 
-    const timerElement = document.getElementById("timer");
-    const progressElement = document.getElementById("progress");
-    const statusElement = document.getElementById("status");
-    const manualLink = document.getElementById("manualLink");
-
-    manualLink.href = target;
-
-    let remaining = duration;
-    let redirected = false;
-
-    function updateTimer() {
-
-        timerElement.textContent = remaining;
-
-        const percentage =
-            ((duration - remaining) / duration) * 100;
-
-        progressElement.style.width = percentage + "%";
-
-        statusElement.textContent =
-            "Weiterleitung in " + remaining + " Sekunden";
-
-        if (remaining <= 0) {
-
-            if (redirected) return;
-
-            redirected = true;
-
-            timerElement.textContent = "✓";
-            statusElement.textContent = "GameHub wird geöffnet ...";
-            progressElement.style.width = "100%";
-
-            window.location.replace(target);
-
-            return;
-        }
-
-        remaining--;
+        patchFrame.style.height =
+            `${window.innerHeight + height}px`;
     }
 
-    updateTimer();
-
-    const interval = setInterval(function () {
-
-        updateTimer();
-
-        if (redirected) {
-            clearInterval(interval);
-        }
-
-    }, 1000);
-
+    window.addEventListener("resize", resizePatch);
+    resizePatch();
 })();
 </script>
 
