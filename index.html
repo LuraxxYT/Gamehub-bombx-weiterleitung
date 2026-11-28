@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -50,7 +51,7 @@ html, body {
     pointer-events: none;
 }
 
-/* Eigenes Branding über dem Base44-Badge */
+/* Eigenes Branding */
 #brand-overlay {
     position: absolute;
     inset: 0;
@@ -71,13 +72,6 @@ html, body {
     pointer-events: auto;
     user-select: none;
     cursor: default;
-}
-
-#ad-layer {
-    position: fixed;
-    inset: 0;
-    z-index: 30;
-    pointer-events: none;
 }
 
 @media (max-width: 600px) {
@@ -112,22 +106,20 @@ html, body {
         aria-hidden="true">
     </iframe>
 
-    <!-- Fängt Interaktionen mit dem Badge ab -->
+    <!-- Eigenes Branding -->
     <div id="brand-overlay">
         By Dummraxx Software
     </div>
 
 </div>
 
-<!-- Werbung -->
-<div id="ad-layer">
-    <script
-        src="https://quge5.com/88/tag.min.js"
-        data-zone="316939"
-        async
-        data-cfasync="false">
-    </script>
-</div>
+<!-- Beibehaltene Quge-Werbung -->
+<script
+    src="https://quge5.com/88/tag.min.js"
+    data-zone="316939"
+    async
+    data-cfasync="false">
+</script>
 
 <script>
 (() => {
